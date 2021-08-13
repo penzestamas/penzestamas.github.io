@@ -7,12 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Document</title>
     <link rel="stylesheet" href="/lib/bootstrap-5.1.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://kit.fontawesome.com/2761e4fce5.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 
-    <div class="container">
+    <!-- <div class="container">
         <button type="button" class="btn btn-primary">Primary</button>
         <button type="button" class="btn btn-secondary">Secondary</button>
         <button type="button" class="btn btn-success">Success</button>
@@ -31,10 +32,10 @@
                 <i class="fas fa-trash-alt"></i>
             </button>
         </div>
-    </div>
+    </div> -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="bt.html">Navbar</a>
+            <a class="navbar-brand" href="/">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -43,13 +44,19 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="bt.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="order-form.html">Order</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.html">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
+                        <a class="nav-link btn btn-info login-button" href="login.html">Login</a>
                     </li>
                 </ul>
                 <form class="d-flex">
@@ -59,6 +66,31 @@
             </div>
         </div>
     </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="flex-container">
+                    <h3 class="weather-heading">Weather</h3>
+                    <form>
+                        <select name="day" id="day">
+                            <option value="0">Monday</option>
+                            <option value="1">Tuesday</option>
+                            <option value="2">Wednesday</option>
+                            <option value="3">Thursday</option>
+                            <option value="4">Friday</option>
+                            <option value="5">Saturday</option>
+                            <option value="6">Sunday</option>
+                        </select>
+                        <button class="btn btn-info" onClick="printWeather()" type="button">Let's see</button>
+                    </form>
+                    <div class="weather"></div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="row">
@@ -80,7 +112,7 @@
                     <div class="form-group">
                         Fizetendő: <span class="show-amount">0</span>Ft
                     </div>
-                    <button onClick="calcAmount()" type="button" class="btn btn-primary">Megrendelés</button>
+                    <button onClick="printPrice()" type="button" class="btn btn-primary">Megrendelés</button>
                 </form>
             </div>
             <div class="col-3"></div>
@@ -88,6 +120,7 @@
     </div>
 
     <script src="/js/main.js"></script>
+    <script src="/js/weather.js"></script>
 </body>
 
 </html>

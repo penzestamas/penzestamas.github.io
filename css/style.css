@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+p { margin: 0 }
+
 h1 {
     color: red;
     font-family: 'Roboto', sans-serif;
@@ -32,6 +34,10 @@ h1 {
     background-color: lightblue
 }
 
+.container {
+    padding: 20px 0
+}
+
 h3 {
     font-family: 'Roboto', sans-serif;
 }
@@ -44,4 +50,24 @@ img {
 
 #img-1 {
     display: block
+}
+
+form div input {
+    margin: 10px 0
+}
+
+.login-button {
+    margin-left: 20px
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.weather {
+    font-size: 1.5rem;
+    height: 70px;
+    width: 250px
 }
