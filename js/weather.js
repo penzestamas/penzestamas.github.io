@@ -75,4 +75,4 @@ function printAverageTemperature() {
 
 printMaxTemperature();
 printMinTemperature();
-printAverageTemperature()
+printAverageTemperature();
