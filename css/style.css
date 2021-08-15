@@ -63,11 +63,10 @@ form div input {
 .flex-container {
     display: flex;
     justify-content: space-around;
-    align-items: center;
 }
 
 .weather {
     font-size: 1.5rem;
     height: 70px;
-    width: 250px
+    width: 300px
 }

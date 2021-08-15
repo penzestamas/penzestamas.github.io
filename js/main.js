@@ -31,3 +31,10 @@ function validateAmount(amountFromUser) {
 }
 
 
+let numericArray = [1, 4, 67, 3, 24, 235];
+let biggest = numericArray[0];
+for (let i = 0; i < numericArray.length; i++) {
+    if (numericArray[i] > bigges) {
+        biggest = numericArray[i];
+    }
+}
