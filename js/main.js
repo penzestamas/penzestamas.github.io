@@ -34,7 +34,17 @@ function validateAmount(amountFromUser) {
 let numericArray = [1, 4, 67, 3, 24, 235];
 let biggest = numericArray[0];
 for (let i = 0; i < numericArray.length; i++) {
-    if (numericArray[i] > bigges) {
+    if (numericArray[i] > biggest) {
         biggest = numericArray[i];
     }
 }
+
+
+let helpText = document.createElement("small");
+helpText.className = "form-text text-muted";
+helpText.innerHTML = "Adja meg a feltéteket!";
+
+let parent = document.querySelector("div.form-group:nth-child(1)");
+parent.appendChild(helpText);
+
+parent.removeChild(helpText);

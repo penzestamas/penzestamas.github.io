@@ -1,9 +1,24 @@
-let temperature = [20, 30, 0, 10, 15, 17, 3];
+let temperature = {
+    celsius0: 20,
+    celsius1: 30,
+    celsius2: 0,
+    celsius3: 10,
+    celsius4: 15,
+    celsius5: 17,
+    celsius6: 3,
+    fahrenheit: celsius => celsius * 1.8 + 32
+};
 
 function printWeather() {
     let day = document.querySelector('select#day');
     let temperatureOutput = document.querySelector('div.weather');
-    temperatureOutput.innerHTML = `<p>${temperature[day.value]}°C ${printDailyOffer(temperature[day.value])}</p>`;
+    let temperatureType = document.querySelectorAll('input[name="teperature"]');
+    temperatureOutput.innerHTML = `<p>
+        ${temperature[`celsius${day.value}`]}&deg;C
+        ${temperature.fahrenheit(temperature[`celsius${day.value}`])}&deg;K
+        ${printDailyOffer(temperature[`celsius${day.value}`])}
+    </p>`;
+    
 }
 
 function printDailyOffer(dailyTemperature) {
@@ -30,10 +45,13 @@ function printDailyOffer(dailyTemperature) {
 
 
 function calculateMaxTemperature() {
-    let maxTemperature = temperature[0];
-    for (let i = 0; i < temperature.length; i++) {
-        if (temperature[i] > maxTemperature) {
-            maxTemperature = temperature[i];
+    let maxTemperature = temperature.celsius0;
+    for (let celsius in temperature) {
+        if (typeof(temperature[celsius]) == 'function') {
+            continue;
+        }
+        if (temperature[celsius] > maxTemperature) {
+            maxTemperature = temperature[celsius];
         }
     }
     return maxTemperature;
@@ -41,14 +59,19 @@ function calculateMaxTemperature() {
 
 function printMaxTemperature() {
     let maxTemperatureOutput = document.querySelector('div.temperature-max');
-    maxTemperatureOutput.innerHTML = `Maximum temperature: ${calculateMaxTemperature()}°C`;
+    let maxTemperatureCelsius = calculateMaxTemperature();
+    let maxTemperatureKelvin = temperature.fahrenheit(maxTemperatureCelsius);
+    maxTemperatureOutput.innerHTML = `Maximum temperature: ${maxTemperatureCelsius}&deg;C ${maxTemperatureKelvin}&deg;K`;
 }
 
 function calculateMinTemperature() {
-    let minTemperature = temperature[0];
-    for (let i = 0; i < temperature.length; i++) {
-        if (temperature[i] < minTemperature) {
-            minTemperature = temperature[i];
+    let minTemperature = temperature.celsius0;
+    for (let celsius in temperature) {
+        if (typeof(temperature[celsius]) == 'function') {
+            continue;
+        }
+        if (temperature[celsius] < minTemperature) {
+            minTemperature = temperature[celsius];
         }
     }
     return minTemperature;
@@ -56,21 +79,28 @@ function calculateMinTemperature() {
 
 function printMinTemperature() {
     let minTemperatureOutput = document.querySelector('div.temperature-min');
-    minTemperatureOutput.innerHTML = `Minimum temperature: ${calculateMinTemperature()}°C`;
+    let minTemperatureCelsius = calculateMinTemperature();
+    let minTemperatureKelvin = temperature.fahrenheit(minTemperatureCelsius);
+    minTemperatureOutput.innerHTML = `Minimum temperature: ${minTemperatureCelsius}&deg;C ${minTemperatureKelvin}&deg;K`;
 }
 
 function calculateAverageTemperature() {
     let sumOfTemperatures = 0;
-    for (let i = 0; i < temperature.length; i++) {
-        sumOfTemperatures += temperature[i]
+    for (let celsius in temperature) {
+        if (typeof(temperature[celsius]) == 'function') {
+            continue;
+        }
+        sumOfTemperatures += temperature[celsius];
     }
-    averageTemperature = parseInt(sumOfTemperatures / temperature.length);
+    let averageTemperature = parseInt(sumOfTemperatures / Object.keys(temperature).length);
     return averageTemperature;
 }
 
 function printAverageTemperature() {
     let averageTemperatureOutput = document.querySelector('div.temperature-avg');
-    averageTemperatureOutput.innerHTML = `Average temperature: ${calculateAverageTemperature()}°C`;
+    let averageTemperatureCelsius = calculateAverageTemperature();
+    let averageTemperatureKelvin = temperature.fahrenheit(averageTemperatureCelsius);
+    averageTemperatureOutput.innerHTML = `Average temperature: ${averageTemperatureCelsius}&deg;C ${averageTemperatureKelvin}&deg;K`;
 }
 
 printMaxTemperature();
