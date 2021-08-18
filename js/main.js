@@ -48,3 +48,23 @@ let parent = document.querySelector("div.form-group:nth-child(1)");
 parent.appendChild(helpText);
 
 parent.removeChild(helpText);
+
+
+let toppings = [
+    "Szalonna",
+    "Hagyma",
+    "Tükörtojás",
+    "Libamáj",
+    "Extra Sonka"
+];
+
+let toppingSelect = document.querySelector("#topInput");
+let index = 0;
+
+while(index < toppings.length) {
+    let option = document.createElement("option");
+    option.value = index;
+    option.innerHTML = toppings[index];
+    toppingSelect.appendChild(option);
+    index++;
+}
