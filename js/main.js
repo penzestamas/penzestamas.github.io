@@ -1,70 +1,179 @@
-function calculatePrice(amountFromUser) {
-    let pricePerPiece = 1000;
-    let delivery = 500;
-    let pay = amountFromUser * pricePerPiece;
-    if (pay < 5000) {
-        pay += delivery;
-    }
-    return pay;
-}
+// felhasználó adatok
+let keys = ["id", "name", "email"];
 
-function printPrice() {
-    let amountInput = document.querySelector("input[name='amount-input']");
-    let amountNumber = parseInt(amountInput.value);
-
-    let showAmount = document.querySelector("span.show-amount");
-    showAmount.innerHTML = validateAmount(amountNumber);
-}
-
-function validateAmount(amountFromUser) {
-    amountFromUser = isNaN(amountFromUser) ? 0 : amountFromUser;
+// adatok lekérése a szerverről
+function getServerData(url) {
+    let fetchOptions = {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache"
+    };
     
-    if (amountFromUser > 10) {
-        alert("Maximum 10 terméket vásárolhat!");
-        return 0
-    } else if (amountFromUser < 1) {
-        alert("Minimum 1 terméket kell vásárolnia!");
-        return 0
-    } else {
-        return calculatePrice(amountFromUser);
+    return fetch(url, fetchOptions).then(
+        response => response.json(),
+        err => console.error(err)
+    );
+}
+
+function startGetUsers() {
+    getServerData("http://localhost:3000/users").then(
+        data => fillDataTable(data, "userTable")
+    );
+}
+document.querySelector("#getDataBtn").addEventListener("click", startGetUsers);
+
+// táblázat kitöltése a szerver adataival
+function fillDataTable(data, tableID) {
+    let table = document.querySelector(`#${tableID}`);
+    if (!table) {
+        console.error(`A kért "${tableID}" nem található`);
+        return;
+    }
+
+    // új felhasználó sor hozzáadása a táblázathoz
+    let tBody = table.querySelector("tbody");
+    tBody.innerHTML = '';
+    let newRow = newUserRow();
+    tBody.appendChild(newRow);
+
+    for (let row of data) {
+        let tr = createAnyElement("tr");
+        for (let k of keys) {
+            let td = createAnyElement("td");
+            let input = createAnyElement("input", {
+                class: "form-control",
+                value: row[k],
+                name: k
+            });
+            if (k == "id") {
+                input.setAttribute("readonly", true);
+            }
+            td.appendChild(input);
+            tr.appendChild(td);
+        }
+        let btnGroup = createBtnGroup();
+        tr.appendChild(btnGroup);
+        tBody.appendChild(tr);
     }
 }
 
-
-let numericArray = [1, 4, 67, 3, 24, 235];
-let biggest = numericArray[0];
-for (let i = 0; i < numericArray.length; i++) {
-    if (numericArray[i] > biggest) {
-        biggest = numericArray[i];
+function createAnyElement(name, attributes) {
+    let element = document.createElement(name);
+    for (let k in attributes) {
+        element.setAttribute(k, attributes[k]);
     }
+    return element;
 }
 
+function createBtnGroup() {
+    let group = createAnyElement("div", {class: "btn btn-group"});
+    let infoBtn = createAnyElement("button", {class: "btn btn-info", onclick: "setRow(this)"});
+    infoBtn.innerHTML = '<i class="fa fa-refresh" aria-hidden="true"></i>';
+    let delBtn = createAnyElement("button", {class: "btn btn-danger", onclick: "delRow(this)"});
+    delBtn.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+    
+    group.appendChild(infoBtn);
+    group.appendChild(delBtn);
 
-let helpText = document.createElement("small");
-helpText.className = "form-text text-muted";
-helpText.innerHTML = "Adja meg a feltéteket!";
+    let td = createAnyElement("td");
+    td.appendChild(group);
+    return td;
+}
 
-let parent = document.querySelector("div.form-group:nth-child(1)");
-parent.appendChild(helpText);
+function delRow(btn) {
+    let tr = btn.parentElement.parentElement.parentElement;
+    // let id = tr.querySelector("td:first-child").innerHTML;
+    let id = tr.querySelector("td:first-child").querySelector("input").value;
+    let fetchOptions = {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache"
+    };
 
-parent.removeChild(helpText);
+    fetch(`http://localhost:3000/users/${id}`, fetchOptions).then(
+        resp => resp.json(),
+        err => console.error(err)
+    ).then(
+        data => {
+            startGetUsers();
+        }
+    )
+}
 
+// új felhasználók felvétele
+function newUserRow(row) {
+    let tr = createAnyElement("tr");
+    for (let k of keys) {
+        let td = createAnyElement("td");
+        let input = createAnyElement("input", {
+            class: "form-control",
+            name: k
+        });
+        td.appendChild(input);
+        tr.appendChild(td);
+    }
 
-let toppings = [
-    "Szalonna",
-    "Hagyma",
-    "Tükörtojás",
-    "Libamáj",
-    "Extra Sonka"
-];
+    let newBtn = createAnyElement("button", {
+        class: "btn btn-success",
+        onclick: "createUser(this)"
+    });
+    newBtn.innerHTML = '<i class="fa fa-plus-circle" aria-hidden="true"></i>';
+    let td = createAnyElement("td");
+    td.appendChild(newBtn);
+    tr.appendChild(td);
 
-let toppingSelect = document.querySelector("#topInput");
-let index = 0;
+    return tr;
+}
 
-while(index < toppings.length) {
-    let option = document.createElement("option");
-    option.value = index;
-    option.innerHTML = toppings[index];
-    toppingSelect.appendChild(option);
-    index++;
+function createUser(btn) {
+    let tr = btn.parentElement.parentElement;
+    let data = getRowData(tr);
+    delete data.id;
+    let fetchOptions = {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    
+    fetch(`http://localhost:3000/users`, fetchOptions).then(
+        resp => resp.json(),
+        err => console.error(err)
+    ).then(
+        data => startGetUsers()
+    );
+}
+
+function getRowData(tr) {
+    let inputs = tr.querySelectorAll("input.form-control");
+    let data = {};
+    for (let i = 0; i < inputs.length; i++) {
+        data[inputs[i].name] = inputs[i].value;
+    }
+    return data;
+}
+
+// adatmódosítás
+function setRow(btn) {
+    let tr = btn.parentElement.parentElement.parentElement;
+    let data = getRowData(tr);
+    let fetchOptions = {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    };
+
+    fetch(`http://localhost:3000/users/${data.id}`, fetchOptions).then(
+        resp => resp.json(),
+        err => console.error(err)
+    ).then(
+        data => startGetUsers()
+    );
 }
